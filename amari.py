@@ -3,7 +3,6 @@
 
 import re
 
-
 def parse_access_log(filepath):
     def create_dict(elem):
         kv = elem.split(':')
@@ -21,7 +20,10 @@ def parse_access_log(filepath):
     return lst
 
 def filter_access_to_not_textual_contents(logmap):
-    return [x for x in logmap if not re.search('(.ico|js|css)$', x['request_uri'])]
+    return [x for x in logmap if not re.search('(^/fonts)|((ico|js|css|png|jpeg|jpg)$)', x['request_uri'])]
+
+def filter_bot_access(logmap):
+    return [x for x in logmap if not re.search('.*(bot|Bot|BOT).*', x['http_user_agent'])]
 
 from datetime import datetime as dt
 def create_accesscount_by_time_map(logmaps):
@@ -34,7 +36,7 @@ def create_accesscount_by_time_map(logmaps):
 logmaps = parse_access_log('access.log')
 
 date_accesscount_map = create_accesscount_by_time_map(
-  filter_access_to_not_textual_contents(logmaps))
+  filter_bot_access(filter_access_to_not_textual_contents(logmaps)))
 
 print('date\tclose')
 for date_count in date_accesscount_map:
