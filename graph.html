@@ -28,6 +28,7 @@ body {
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css"/>
 </head>
 <body>
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
@@ -55,18 +56,23 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
 
+<!-- https://developer.mozilla.org/ja/docs/Web/SVG/Attribute/transform -->
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+<!-- https://github.com/mbostock/d3/wiki/API-Reference#d3-core -->
 d3.tsv("data.tsv", type, function(error, data) {
   if (error) throw error;
 
+  // data = {};
+  // Returns the minimum and maximum value in the given array using natural order.
   x.domain(d3.extent(data, function(d) { return d.date; }));
   y.domain(d3.extent(data, function(d) { return d.close; }));
 
+  <!-- group tag -->
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -80,8 +86,9 @@ d3.tsv("data.tsv", type, function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Price ($)");
+      .text("Page View");
 
+  // datum: Gets or sets the bound data for each selected element.
   svg.append("path")
       .datum(data)
       .attr("class", "line")
